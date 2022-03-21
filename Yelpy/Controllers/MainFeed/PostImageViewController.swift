@@ -2,30 +2,39 @@
 //  PostImageViewController.swift
 //  Yelpy
 //
-//  Created by German Flores on 7/8/20.
+//  Created by German Flores on 7/8/20. Edited by Jason Lee on 3/20/22
 //  Copyright © 2020 memo. All rights reserved.
 //
 
 import UIKit
 
-protocol PostImageViewControllerDelegate: class  {
-    func imageSelected(controller: PostImageViewController, image: UIImage)
-}
+// TODO: Lab 6 Step 6a - Create Protocol for PostImageViewControllerDelegate
 
 class PostImageViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     @IBOutlet weak var selectedImageView: UIImageView!
-    weak var delegate: PostImageViewControllerDelegate!
+    
+    // TODO: Lab 6 Step 6b - Add delegate for the protocol you created
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
         createImagePicker()
         navigationController?.navigationBar.isHidden = true
-        
     }
     
-    // MARK: Helpers
+    // Unwind back to Restaurant Detail after uploading image
+    @IBAction func onFinishPosting(_ sender: Any) {
+        performSegue(withIdentifier: "unwindToDetail", sender: self)
+        // TODO: Lab 6 Step 6c - Add delegate for the protocol you created
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController,
+                               didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        let originalImage = info[.originalImage] as! UIImage
+        self.selectedImageView.image = originalImage
+        dismiss(animated: true, completion: nil)
+    }
+
     func createImagePicker() {
         let imagePicker = UIImagePickerController()
         imagePicker.delegate = self
@@ -40,37 +49,4 @@ class PostImageViewController: UIViewController, UIImagePickerControllerDelegate
         }
         self.present(imagePicker, animated: true, completion: nil)
     }
-    
-    // MARK: ImagePicker Delegate Methods
-    func imagePickerController(_ picker: UIImagePickerController,
-                               didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        let originalImage = info[.originalImage] as! UIImage
-        //let editedImage = info[.editedImage] as! UIImage
-        
-
-        self.selectedImageView.image = originalImage
-        
-        print("image dismissed")
-        dismiss(animated: true, completion: nil)
-    }
-    
-    
-    @IBAction func onFinishPosting(_ sender: Any) {
-        performSegue(withIdentifier: "unwindToDetail", sender: self)
-        delegate.imageSelected(controller: self, image: self.selectedImageView.image!)
-    }
-    
-    
-    
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }

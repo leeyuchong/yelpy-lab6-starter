@@ -2,47 +2,43 @@
 //  DetailViewController.swift
 //  Yelpy
 //
-//  Created by Memo on 5/26/20.
+//  Created by Memo on 5/26/20. Edited by Jason Lee on 3/20/22
 //  Copyright © 2020 memo. All rights reserved.
 //
 
 import UIKit
 import AlamofireImage
-import MapKit
+// TODO: Lab 6 Step 3c: Import
 
-class RestaurantDetailViewController: UIViewController, MKMapViewDelegate, PostImageViewControllerDelegate {
+class RestaurantDetailViewController: UIViewController {
+    // TODO: Lab 6 Step 3e: Conform to MapViewDelegate
+    // TODO: Lab 6 Step 7a: Conform to PostImageViewDelegate
     
-
-    // ––––– TODO: Configure outlets
-    // NOTE: Make sure to set images to "Content Mode: Aspect Fill" on the
     @IBOutlet weak var headerImage: UIImageView!
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var starImage: UIImageView!
     @IBOutlet weak var reviewsLabel: UILabel!
-    @IBOutlet weak var mapView: MKMapView!
+    // TODO: Lab 6 Step 3b - Add mapView outlet
+    // TODO: Lab 6 Step 4a
     
     // Initialize restaurant variable
     var r: Restaurant!
-    var annotationView: MKAnnotationView!
+    
         
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         configureOutlets()
-        // 11) purposely wait until last minute to configure this to explain to students delegation!
-        // step 10) is running the app
-        mapView.delegate = self
+        // TODO: Lab 6 Step 3f
     }
     
+    // Add image to MapView Annotation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "toPostImageVC" {
             let postImageVC = segue.destination as! PostImageViewController
-            postImageVC.delegate = self
+            // TODO: Lab 6 Step 7d: Initialize PostImageViewController's delegate object
         }
     }
 
-    
-    // ––––– TODO: Configure outlets :)
     func configureOutlets() {
         nameLabel.text = r.name
         reviewsLabel.text = String(r.reviews)
@@ -56,77 +52,27 @@ class RestaurantDetailViewController: UIViewController, MKMapViewDelegate, PostI
 
         headerImage.addSubview(tintView)
         
-        // MARK: Lab 6 set region for map to be coordinates of restaurant
+        // TODO: Lab 6 Step 3c - Configure initial map area
         // 1) get longitude and latitude from coordinates property
-        let latitude = r.coordinates["latitude"]!
-        let longitude = r.coordinates["longitude"]!
         // test coordinates are being printed
-        print("COORDS: \(latitude), \(longitude)")
-        
         // 2) initialize coordinate point for restaurant
-        let locationCoordinate = CLLocationCoordinate2DMake(CLLocationDegrees.init(latitude), CLLocationDegrees.init(longitude))
-        
         // 3) initialize region object using restaurant's coordinates
-        let restaurantRegion = MKCoordinateRegion(center: CLLocationCoordinate2DMake(latitude, longitude), span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1))
-        
         // 4) set region in mapView to be that of restaurants
-        mapView.setRegion(restaurantRegion, animated: true)
         
+        // TODO: Lab 6 Step 4b - Configure annotation
         // 5) instantiate annotation object to show pin on map
-        let annotation = MKPointAnnotation()
-        
         // 6) set annotation's properties
-        annotation.coordinate = locationCoordinate
-        annotation.title = r.name
-        
         // 7) drop pin on map using restaurant's coordinates
-        mapView.addAnnotation(annotation)
-        
     }
     
-    // MARK: 8) Configure annotation view using protocol method
-    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-        let reuseID = "myAnnotationView"
-        
-        print("mapView protocol called!")
-        
-        self.annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: reuseID)
-        
-        if (annotationView == nil){
-            // MARK: USE MKPinAnnotationView and NOT MKAnnotationView
-            annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseID)
-            annotationView?.canShowCallout = true
-            
-            // 9) Add info button to annotation view
-            let annotationViewButton = UIButton(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
-            annotationViewButton.setImage(UIImage(named: "camera"), for: .normal)
-            
-            annotationView?.leftCalloutAccessoryView = annotationViewButton
-        }
-//        let imageView = annotationView?.leftCalloutAccessoryView as! UIImageView
-//
-//        imageView.image = UIImage(named: "camera")
-        
-        return annotationView
-        
-    }
+    // TODO: Lab 6 Step 5a-d - Configure annotation view using protocol method
     
-    // MARK: 12) action to execute when user taps annotation views accessory buttons
-    func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
-        // 14) performSegue to PostImageVC
-        self.performSegue(withIdentifier: "toPostImageVC", sender: nil)
-    }
+    // TODO: Lab 6 Step 5e-f - Action to execute when user taps annotation views accessory buttons
     
-    // MARK: 19) Conform to PostImageViewDelegate protocol
-    func imageSelected(controller: PostImageViewController, image: UIImage) {
-        // 9) Add info button to annotation view
-        let annotationViewButton = UIButton(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
-        annotationViewButton.setImage(image, for: .normal)
-        
-        self.annotationView?.leftCalloutAccessoryView = annotationViewButton
-    }
-    
+    // TODO: Lab 6 Step 7b-c: Conform to PostImageViewDelegate protocol
+
+    // Unwind segue after user finishes uploading image for map annotation
     @IBAction func unwind(_ seg: UIStoryboardSegue) {
-        
+
     }
 }
